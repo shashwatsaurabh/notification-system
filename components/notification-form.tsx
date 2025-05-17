@@ -60,15 +60,19 @@ export default function NotificationForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="userId">User ID</Label>
+        <Label htmlFor="userId">{formData.type === "email" ? "Email Address" : "User ID"}</Label>
         <Input
           id="userId"
           name="userId"
+          type={formData.type === "email" ? "email" : "text"}
           value={formData.userId}
           onChange={handleChange}
-          placeholder="Enter user ID"
+          placeholder={formData.type === "email" ? "Enter email address" : "Enter user ID"}
           required
         />
+        {formData.type === "email" && (
+          <p className="text-xs text-gray-500">Enter your actual email address to receive the notification.</p>
+        )}
       </div>
 
       <div className="space-y-2">

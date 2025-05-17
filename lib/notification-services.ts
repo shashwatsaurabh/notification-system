@@ -1,15 +1,47 @@
 import type { Notification } from "./types"
+import nodemailer from "nodemailer"
 
-// Simulated email service
+// Create a transporter for sending real emails
+const emailTransporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST || "smtp.example.com",
+  port: Number.parseInt(process.env.EMAIL_PORT || "587"),
+  secure: process.env.EMAIL_SECURE === "true",
+  auth: {
+    user: process.env.EMAIL_USER || "",
+    pass: process.env.EMAIL_PASSWORD || "",
+  },
+})
+
+// Real email service
 export async function sendEmail(notification: Notification): Promise<void> {
   console.log(`Sending email to user ${notification.userId}: ${notification.subject}`)
 
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  // Check if we have the necessary environment variables
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+    console.log("Email credentials not configured. Using simulation mode.")
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-  // Simulate occasional failures (20% chance)
-  if (Math.random() < 0.2) {
-    throw new Error("Email service temporarily unavailable")
+    // For demo purposes, we'll consider it successful
+    return
+  }
+
+  try {
+    // Get the user's email from the userId
+    // In a real application, you would look up the user's email in your database
+    const userEmail = notification.userId.includes("@") ? notification.userId : `${notification.userId}@example.com`
+
+    // Send the actual email
+    await emailTransporter.sendMail({
+      from: process.env.EMAIL_FROM || "notifications@example.com",
+      to: userEmail,
+      subject: notification.subject,
+      text: notification.content,
+      html: `<div>${notification.content}</div>`,
+    })
+  } catch (error) {
+    console.error("Failed to send email:", error)
+    throw new Error("Email service failed to send message")
   }
 }
 

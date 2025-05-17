@@ -43,6 +43,34 @@ A system to send notifications to users with support for email, SMS, and in-app 
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
+## Email Configuration
+
+To send real emails, you need to configure SMTP settings:
+
+1. Go to the "Email Config" tab in the application
+2. Enter your SMTP server details:
+   - SMTP Host (e.g., smtp.gmail.com)
+   - SMTP Port (e.g., 587)
+   - Whether to use SSL/TLS
+   - SMTP Username (your email)
+   - SMTP Password (your password or app password)
+   - From Email (the email address that will appear as the sender)
+
+For Gmail users:
+- You may need to use an "App Password" instead of your regular password
+- To create an App Password, go to your Google Account > Security > 2-Step Verification > App passwords
+
+Alternatively, you can set the following environment variables:
+
+\`\`\`
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your-email@example.com
+EMAIL_PASSWORD=your-password
+EMAIL_FROM=notifications@example.com
+\`\`\`
+
 ## API Documentation
 
 ### Send a Notification
